@@ -104,7 +104,7 @@ func TestStoreWins(t *testing.T) {
 func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 	database, cleanDatabase := createTemplateFile(t, "")
 	defer cleanDatabase()
-	store := &FileSystemPlayerStore{database}
+	store, _ := NewFileSystemPlayerStore(database)
 	server := NewPlayerServer(store)
 	player := "Pepper"
 
@@ -167,7 +167,7 @@ func TestFileSystemStore(t *testing.T) {
 
 		defer cleanDatabase()
 
-		store := FileSystemPlayerStore{database}
+		store, _ := NewFileSystemPlayerStore(database)
 
 		got := store.GetLeague()
 
@@ -189,7 +189,7 @@ func TestFileSystemStore(t *testing.T) {
 
 		defer cleanDatabase()
 
-		store := FileSystemPlayerStore{database}
+		store, _ := NewFileSystemPlayerStore(database)
 
 		got := store.GetPlayerScore("Chris")
 		want := 33
@@ -203,7 +203,7 @@ func TestFileSystemStore(t *testing.T) {
 
 		defer cleanDatabase()
 
-		store := FileSystemPlayerStore{database}
+		store, _ := NewFileSystemPlayerStore(database)
 		store.RecordWin("Chris")
 
 		got := store.GetPlayerScore("Chris")
@@ -218,7 +218,7 @@ func TestFileSystemStore(t *testing.T) {
 
 		defer cleanDatabase()
 
-		store := FileSystemPlayerStore{database}
+		store, _ := NewFileSystemPlayerStore(database)
 		store.RecordWin("Pepper")
 
 		got := store.GetPlayerScore("Pepper")
@@ -287,7 +287,7 @@ func assertScoreEquals(t *testing.T, got, want int) {
 	}
 }
 
-func createTemplateFile(t *testing.T, initialData string) (io.ReadWriteSeeker, func()) {
+func createTemplateFile(t *testing.T, initialData string) (*os.File, func()) {
 	t.Helper()
 
 	tempFile, err := ioutil.TempFile("", "db")

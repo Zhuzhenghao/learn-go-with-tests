@@ -1,0 +1,25 @@
+package main
+
+import (
+	"io/ioutil"
+	"testing"
+)
+
+func TestTape_Write(t *testing.T) {
+	file, clean := createTemplateFile(t, "123456")
+
+	defer clean()
+	tape := &tape{file}
+	tape.Write([]byte("abc"))
+
+	file.Seek(0, 0)
+
+	newFileContents, _ := ioutil.ReadAll(file)
+	want := "abc"
+	got := string(newFileContents)
+
+	if got != want {
+		t.Errorf("got %q want %q", got, want)
+	}
+
+}
